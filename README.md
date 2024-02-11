@@ -19,5 +19,5 @@ Also, I could've stored the data in the .csv file for now and if the user is pas
 
 - Prompt can also be improveed, security checks can be added in the prompt if required in order to prevent prompt leaking. 
 
-- Why only OpenAI? 
+- Why just OpenAI API? 
 A modular LLM framework can be created which can let us switch between different LLMs without much hassel. 
