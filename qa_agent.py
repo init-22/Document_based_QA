@@ -1,11 +1,14 @@
-import os
 import json
+import os
+import re
+
 from pypdf import PdfReader
 from tqdm import tqdm
 
-from openai_api import OpenAI_api
 from embeddings import Embedding
+from openai_api import OpenAI_api
 from prompt import prompt_query
+
 
 def get_multiple_questions(num_questions):
     questions = []
@@ -31,15 +34,15 @@ def preprocess_document(document, embedding_obj, chunk_size=256, chunk_overlap=7
     # Source: https://www.pinecone.io/learn/chunking-strategies/
     # 1 token == 4 characters in avg. so 256 tokens = 256*4 = 1024
 
-    chunk_size*= 4
+    chunk_size *= 4
     i = 0
     while i < len(document_info) - chunk_size:
         current_info = document_info[i : i + chunk_size]
         # adding overlap
         i = i + (chunk_size - chunk_overlap)
-        embedding_list.append([current_info, embedding_obj.get_embeddings(current_info)])
-        if i>3000:
-            break
+        embedding_list.append(
+            [current_info, embedding_obj.get_embeddings(current_info)]
+        )
 
     return embedding_list
 
@@ -48,25 +51,31 @@ def main(openai_api, embedding_obj, document, questions_list, top_n_matches):
     print("\n\nCreating Embeddings from the document")
     embedding_list = preprocess_document(document, embedding_obj)
     print("\n\nMatching question embeddings with the document embeddings")
-    matched_output = embedding_obj.get_matched_embeddings(questions_list, embedding_list, top_n=top_n_matches)
+    matched_output = embedding_obj.get_matched_embeddings(
+        questions_list, embedding_list, top_n=top_n_matches
+    )
     prompt = prompt_query.format(information=matched_output)
     print("\n\nHold on, Providing the answer in a minute...")
     result = openai_api.ask(prompt)
     print("\n\nResponse:\n")
-    import pdb;pdb.set_trace()
-    print(result)
 
-
+    questions = re.findall(r"Question:\s*(.*?)(?:\n|$)", result)
+    answers = re.findall(r"Answer:\s*(.*?)(?:\n|$)", result)
+    json_obj = {}
+    for i in range(len(questions)):
+        json_obj[questions[i]] = answers[i]
+    print(json_obj)
 
 
 if __name__ == "__main__":
     openai_key = ""
     openai_api = OpenAI_api(openai_key)
     embedding_obj = Embedding(openai_key)
-    top_n_matches = 5 # Top n matches of the embeddings from the document
+    top_n_matches = 5  # Top n matches of the embeddings from the document
 
-
-    print("\nI can help you get answers to your questions based on the document provided by you!\n")
+    print(
+        "\nI can help you get answers to your questions based on the document provided by you!\n"
+    )
 
     document = input("\nPlease provide the document: ")
 

@@ -21,9 +21,9 @@ Question: Who is Aaron?
 Answer: Aaron is a mathematician
 
 '''
-Do not consider the above example in the answer, answer based on actual passed information.
+
+Do not consider the above example in the answer.
+Do not change the format of the answer. 
 Answers should be word to word match if the question is a word to word match.
-If the answer cannot be found or If the answer is of low confidence, reply with “Data Not Available” along with that question. 
-
-
+If the answer cannot be found or If the answer is of low confidence, reply with question as a key and “Data Not Available” as a value. 
 """
