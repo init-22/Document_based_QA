@@ -8,7 +8,7 @@ class Embedding:
         self.openai.api_key = key
         self.embedding_model = embedding_model
 
-    def get_embeddings(self, text, embedding_model="text-embedding-ada-002"):
+    def get_embeddings(self, text):
         response = openai.embeddings.create(input=text, model=self.embedding_model)
         embedding = response.data[0].embedding
         return embedding

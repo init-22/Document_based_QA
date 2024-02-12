@@ -17,7 +17,7 @@ For this use case I am using chunk size of 256</br>
 - Turning a document into embeddings in runtime should be avoided, if a user already has a data we can convert it into embeddings and then store it into a vector database, so the inference would be optimized.
 Also, I could've stored the data in the .csv file for now and if the user is passing the same file over and over then I could've just used it from that stored file and passed it to the LLM to save time but not sure if its a good idea, what if the user don't want us to save the data?
 
-- Prompt can also be improveed, security checks can be added in the prompt if required in order to prevent prompt leaking. 
+- Prompt can also be improved, security checks can be added in the prompt if required in order to prevent prompt leaking. 
 
 - Why just OpenAI API? 
 A modular LLM framework can be created which can let us switch between different LLMs without much hassel. 
