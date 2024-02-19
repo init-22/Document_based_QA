@@ -9,15 +9,13 @@
 6) LLM generating the response.
 
 
-### How to improve it further? :</br>
-- Ideal chunk size and overlap should be calculated based on few more examples text-embedding-ada-002 performs better on chunks containing 256 or 512 tokens. Source: https://www.pinecone.io/learn/chunking-strategies/
-For this use case I am using chunk size of 256</br>
-1 token == 4 characters in avg. so 256 tokens = 256*4 = 1024
-
-- Turning a document into embeddings in runtime should be avoided, if a user already has a data we can convert it into embeddings and then store it into a vector database, so the inference would be optimized.
-Also, I could've stored the data in the .csv file for now and if the user is passing the same file over and over then I could've just used it from that stored file and passed it to the LLM to save time but not sure if its a good idea, what if the user don't want us to save the data?
-
-- Prompt can also be improved, security checks can be added in the prompt if required in order to prevent prompt leaking. 
-
-- Why just OpenAI API? 
-A modular LLM framework can be created which can let us switch between different LLMs without much hassel. 
+### How to improve it further? :</br> 
+- Store chat history, use it for analytics, see what and where the LLM is giving wrong or hallucinated responses.
+- Deciding the chunk size is important, some iterations have to be done on that.
+- There could be different ways to match the embeddings for example. Divide embedding and also maintain their indexes to know the relative position. Once the matching score is higher, pass the more nearest neighbour chunks for better context. (eg. index-1, index, index+1)
+- If the model can accommodate high token_len(GPT 128k, 32k) , pass the matching chunk + index or line number along with the entire document to allow the LLM to reason from entire knowledge.
+- If the answer is not found in the document, ask the user if they prefer answers from the web, use serpapi, duckduckgo etc.
+- Also, you can pass the summary of the document instead of a whole document. Let the LLM generate a summary of the entire document or summary of chunked documents (point 4)
+- Sometimes users don't ask specific questions, in those scenarios, ask follow up questions, or let the LLM rephrase the question.
+- Add agents who can read the answer, think and reiterate if the answer is not satisfactory.
+- If you are already aware of the segment of the data, eg. healthcare; finetune on healthcare related data.
